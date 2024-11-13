@@ -33,7 +33,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
           id="skip" // For accessibility skip-to-content link
           className="min-h-[calc(100dvh-4rem)] md:min-h[calc(100dvh-5rem)]" // Responsive height calculations
         >
-          {children} // Render page-specific content
+          {children}
         </main>
         <Footer />
         <Suspense>
