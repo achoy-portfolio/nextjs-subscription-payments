@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
-      <body className="bg-black">
+      <body className="bg-white">
         <Navbar />
         <main
           id="skip" // For accessibility skip-to-content link
@@ -38,7 +38,6 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         <Footer />
         <Suspense>
           {' '}
-          // Wrap Toaster in Suspense for loading states
           <Toaster />
         </Suspense>
       </body>

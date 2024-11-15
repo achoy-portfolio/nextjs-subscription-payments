@@ -111,7 +111,7 @@ const Quiz = () => {
 
   if (showResults) {
     return (
-      <div className="max-w-2xl mx-auto p-6 bg-black rounded-lg shadow-lg">
+      <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold mb-4">Quiz Complete!</h2>
         <p className="text-xl mb-4">
           Your score: {score} out of {questions.length} (
@@ -119,7 +119,7 @@ const Quiz = () => {
         </p>
         <button
           onClick={restartQuiz}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="bg-blue-500 text-black px-4 py-2 rounded hover:bg-blue-600"
         >
           Restart Quiz
         </button>
@@ -146,7 +146,7 @@ const Quiz = () => {
                                 p-2 text-sm rounded-l-lg border-r-4
                                 transition-all hover:w-20
                                 ${currentQuestionIndex === index ? 'bg-blue-500 border-white' : 'bg-gray-800 border-gray-600 hover:bg-gray-700'}
-                                ${index < currentQuestionIndex ? 'text-gray-400' : 'text-white'}
+                                ${index < currentQuestionIndex ? 'text-gray-400' : 'text-black font-bold'}
                                 ${attemptedQuestions.includes(index) && selectedAnswers[index] ? 'bg-gray-400' : 'bg-green-700'}
                             `}
             >
@@ -161,7 +161,7 @@ const Quiz = () => {
       </div>
 
       {/* Question and Answers */}
-      <div className="max-w-2xl flex-1 p-6 bg-black rounded-lg shadow-lg">
+      <div className="max-w-2xl flex-1 p-6 bg-white rounded-lg shadow-lg">
         <div className="mb-4">
           <span className="text-sm text-gray-500">
             Question {currentQuestionIndex + 1} of {questions.length}
@@ -175,7 +175,7 @@ const Quiz = () => {
             />
           </div>
         </div>
-        <h2 className="text-xl font-bold mb-4">
+        <h2 className="text-xl text-black font-bold mb-4">
           {currentQuestion.question_text}
         </h2>
         <div className="space-y-3">
@@ -231,7 +231,7 @@ const Quiz = () => {
             {selectedAnswer && (
               <button
                 onClick={handleCheckAnswer}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                className="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600"
               >
                 Check Answer
               </button>
@@ -239,14 +239,14 @@ const Quiz = () => {
             {currentQuestionIndex > 0 && (
               <button
                 onClick={handlePreviousQuestion}
-                className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+                className="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600"
               >
                 {'< Back'}
               </button>
             )}
             <button
               onClick={handleNextQuestion}
-              className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+              className="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600"
             >
               {currentQuestionIndex === questions.length - 1
                 ? 'Finish'

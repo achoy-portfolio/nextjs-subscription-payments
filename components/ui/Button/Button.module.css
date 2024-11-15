@@ -3,7 +3,7 @@
 }
 
 .root:hover {
-  @apply bg-zinc-800 text-white border border-white;
+  @apply bg-white text-black border border-white;
 }
 
 .root:focus {
@@ -11,11 +11,11 @@
 }
 
 .root[data-active] {
-  @apply bg-zinc-600;
+  @apply bg-white;
 }
 
 .loading {
-  @apply bg-zinc-700 text-zinc-500 border-zinc-600 cursor-not-allowed;
+  @apply bg-white text-zinc-500 border-zinc-600 cursor-not-allowed;
 }
 
 .slim {
@@ -24,7 +24,7 @@
 
 .disabled,
 .disabled:hover {
-  @apply text-zinc-400 border-zinc-600 bg-zinc-700 cursor-not-allowed;
+  @apply text-zinc-400 border-zinc-600 bg-white cursor-not-allowed;
   filter: grayscale(1);
   -webkit-transform: translateZ(0);
   -webkit-perspective: 1000;
