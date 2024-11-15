@@ -60,6 +60,14 @@ const Quiz = () => {
     }
   };
 
+  const handlePreviousQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+      setSelectedAnswer(null);
+      setIsCorrect(null);
+    }
+  };
+
   const restartQuiz = () => {
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
@@ -111,15 +119,15 @@ const Quiz = () => {
                 setIsCorrect(null);
               }}
               className={`
-                p-2 text-sm rounded-l-lg border-r-4
-                transition-all hover:w-20
-                ${
-                  currentQuestionIndex === index
-                    ? 'bg-blue-500 border-white'
-                    : 'bg-gray-800 border-gray-600 hover:bg-gray-700'
-                }
-                ${index < currentQuestionIndex ? 'text-gray-400' : 'text-white'}
-              `}
+                  p-2 text-sm rounded-l-lg border-r-4
+                  transition-all hover:w-20
+                  ${
+                    currentQuestionIndex === index
+                      ? 'bg-blue-500 border-white'
+                      : 'bg-gray-800 border-gray-600 hover:bg-gray-700'
+                  }
+                  ${index < currentQuestionIndex ? 'text-gray-400' : 'text-white'}
+                `}
             >
               Q{index + 1}
             </button>
@@ -177,14 +185,26 @@ const Quiz = () => {
           <span className="text-sm text-gray-500">
             Score: {score}/{currentQuestionIndex + 1}
           </span>
-          <button
-            onClick={handleNextQuestion}
-            className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
-          >
-            {currentQuestionIndex === questions.length - 1
-              ? 'Finish'
-              : 'Next >'}
-          </button>
+          <div className="flex space-x-5">
+            {' '}
+            {/* Add space-x-5 here */}
+            {currentQuestionIndex > 0 && (
+              <button
+                onClick={handlePreviousQuestion}
+                className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+              >
+                {'< Back'}
+              </button>
+            )}
+            <button
+              onClick={handleNextQuestion}
+              className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+            >
+              {currentQuestionIndex === questions.length - 1
+                ? 'Finish'
+                : 'Next >'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
