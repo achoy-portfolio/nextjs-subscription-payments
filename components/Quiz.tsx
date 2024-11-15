@@ -12,8 +12,8 @@ const Quiz = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  // State to track attempted questions
   const [attemptedQuestions, setAttemptedQuestions] = useState<number[]>([]);
+  const [selectedAnswers, setSelectedAnswers] = useState<(string | null)[]>([]);
 
   const supabase = createClient();
 
@@ -44,16 +44,22 @@ const Quiz = () => {
   };
 
   const handleAnswerSelect = (answer: string) => {
-    // Allow de-selection
-    if (selectedAnswer === answer) {
-      setSelectedAnswer(null);
-    } else {
-      setSelectedAnswer(answer);
-      // Mark the question as attempted
-      if (!attemptedQuestions.includes(currentQuestionIndex)) {
-        setAttemptedQuestions([...attemptedQuestions, currentQuestionIndex]);
-      }
+    setSelectedAnswers((prevAnswers) => {
+      const newAnswers = [...prevAnswers];
+      newAnswers[currentQuestionIndex] = answer;
+      return newAnswers;
+    });
+
+    if (answer === null) {
+      // Remove attempt if deselecting
+      setAttemptedQuestions((prevAttempts) =>
+        prevAttempts.filter((item) => item !== currentQuestionIndex)
+      );
+    } else if (!attemptedQuestions.includes(currentQuestionIndex)) {
+      setAttemptedQuestions([...attemptedQuestions, currentQuestionIndex]);
     }
+
+    setSelectedAnswer(answer);
     setIsCorrect(null);
   };
 
@@ -68,7 +74,7 @@ const Quiz = () => {
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedAnswer(null);
+      setSelectedAnswer(selectedAnswers[currentQuestionIndex + 1] || null); // Set saved answer for the next question
       setIsCorrect(null);
     } else {
       setShowResults(true);
@@ -78,7 +84,7 @@ const Quiz = () => {
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setSelectedAnswer(null);
+      setSelectedAnswer(selectedAnswers[currentQuestionIndex - 1] || null); // Set saved answer for the previous question
       setIsCorrect(null);
     }
   };
@@ -89,7 +95,8 @@ const Quiz = () => {
     setScore(0);
     setShowResults(false);
     setIsCorrect(null);
-    setAttemptedQuestions([]); // Reset attempted questions
+    setAttemptedQuestions([]);
+    setSelectedAnswers([]);
   };
 
   if (isLoading) {
@@ -132,7 +139,7 @@ const Quiz = () => {
               key={index}
               onClick={() => {
                 setCurrentQuestionIndex(index);
-                setSelectedAnswer(null);
+                setSelectedAnswer(selectedAnswers[index] || null);
                 setIsCorrect(null);
               }}
               className={`
@@ -140,14 +147,13 @@ const Quiz = () => {
                                 transition-all hover:w-20
                                 ${currentQuestionIndex === index ? 'bg-blue-500 border-white' : 'bg-gray-800 border-gray-600 hover:bg-gray-700'}
                                 ${index < currentQuestionIndex ? 'text-gray-400' : 'text-white'}
-                                ${attemptedQuestions.includes(index) ? 'bg-gray-400' : 'bg-green-700'}
+                                ${attemptedQuestions.includes(index) && selectedAnswers[index] ? 'bg-gray-400' : 'bg-green-700'}
                             `}
             >
               <span
-                className={`${attemptedQuestions.includes(index) ? 'text-black font-bold' : ''}`}
+                className={`${attemptedQuestions.includes(index) && selectedAnswers[index] ? 'text-black font-bold' : ''}`}
               >
-                {' '}
-                {/* Added span with conditional styling */}Q{index + 1}
+                Q{index + 1}
               </span>
             </button>
           ))}
@@ -176,7 +182,18 @@ const Quiz = () => {
           {['A', 'B', 'C', 'D'].map((choice) => (
             <button
               key={choice}
-              onClick={() => handleAnswerSelect(choice)}
+              onClick={() => {
+                if (selectedAnswer === choice) {
+                  handleAnswerSelect(null);
+
+                  // Remove attempt if de-selecting
+                  setAttemptedQuestions((prevAttempts) =>
+                    prevAttempts.filter((item) => item !== currentQuestionIndex)
+                  );
+                } else {
+                  handleAnswerSelect(choice);
+                }
+              }}
               className={`w-full p-4 text-left rounded-lg border ${
                 selectedAnswer === choice
                   ? 'bg-blue-500 border-white-500'
