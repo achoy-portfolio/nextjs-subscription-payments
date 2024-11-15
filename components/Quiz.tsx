@@ -143,15 +143,16 @@ const Quiz = () => {
                 setIsCorrect(null);
               }}
               className={`
-                                p-2 text-sm rounded-l-lg border-r-4
-                                transition-all hover:w-20
-                                ${currentQuestionIndex === index ? 'bg-blue-500 border-white' : 'bg-gray-800 border-gray-600 hover:bg-gray-700'}
-                                ${index < currentQuestionIndex ? 'text-gray-400' : 'text-black font-bold'}
-                                ${attemptedQuestions.includes(index) && selectedAnswers[index] ? 'bg-gray-400' : 'bg-green-700'}
-                            `}
+                p-2 text-sm rounded-l-lg
+                transition-all hover:scale-110 hover:bg-blue-200
+                ${currentQuestionIndex === index ? 'bg-blue-500' : ''}
+                ${index < currentQuestionIndex ? 'text-white font-bold' : 'text-white font-bold'}
+                ${currentQuestionIndex !== index && attemptedQuestions.includes(index) && selectedAnswers[index] ? 'bg-gray-400' : ''}
+                ${currentQuestionIndex !== index && !attemptedQuestions.includes(index) ? 'bg-green-700' : ''}
+            `}
             >
               <span
-                className={`${attemptedQuestions.includes(index) && selectedAnswers[index] ? 'text-black font-bold' : ''}`}
+                className={`${attemptedQuestions.includes(index) && selectedAnswers[index] ? 'text-white font-bold' : ''}`}
               >
                 Q{index + 1}
               </span>
@@ -163,7 +164,7 @@ const Quiz = () => {
       {/* Question and Answers */}
       <div className="max-w-2xl flex-1 p-6 bg-white rounded-lg shadow-lg">
         <div className="mb-4">
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-white">
             Question {currentQuestionIndex + 1} of {questions.length}
           </span>
           <div className="h-2 bg-gray-200 rounded">
@@ -196,8 +197,8 @@ const Quiz = () => {
               }}
               className={`w-full p-4 text-left rounded-lg border ${
                 selectedAnswer === choice
-                  ? 'bg-blue-500 border-white-500'
-                  : 'hover:bg-blue-500'
+                  ? 'bg-yellow-500 border-white-500'
+                  : 'hover:border-yellow-500 border-8'
               }`}
             >
               <span className="font-bold mr-2">{choice}.</span>
@@ -224,14 +225,14 @@ const Quiz = () => {
         {/* Navigation Buttons */}
         <div className="mt-6 flex justify-between items-center">
           {' '}
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-white">
             Score: {score}/{currentQuestionIndex + 1}
           </span>
           <div className="flex space-x-5">
             {selectedAnswer && (
               <button
                 onClick={handleCheckAnswer}
-                className="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600"
+                className="bg-green-500 text-white font-bold px-4 py-2 rounded hover:bg-green-600"
               >
                 Check Answer
               </button>
@@ -239,14 +240,14 @@ const Quiz = () => {
             {currentQuestionIndex > 0 && (
               <button
                 onClick={handlePreviousQuestion}
-                className="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600"
+                className="bg-green-500 text-white font-bold px-4 py-2 rounded hover:bg-green-600"
               >
                 {'< Back'}
               </button>
             )}
             <button
               onClick={handleNextQuestion}
-              className="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600"
+              className="bg-green-500 text-white font-bold px-4 py-2 rounded hover:bg-green-600"
             >
               {currentQuestionIndex === questions.length - 1
                 ? 'Finish'
