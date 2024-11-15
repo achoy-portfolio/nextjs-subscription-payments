@@ -106,15 +106,6 @@ const Quiz = () => {
             <button
               key={index}
               onClick={() => {
-                if (selectedAnswer === null && index !== currentQuestionIndex) {
-                  if (
-                    !confirm(
-                      "You haven't answered this question. Are you sure you want to move on?"
-                    )
-                  ) {
-                    return;
-                  }
-                }
                 setCurrentQuestionIndex(index);
                 setSelectedAnswer(null);
                 setIsCorrect(null);
@@ -190,7 +181,9 @@ const Quiz = () => {
             onClick={handleNextQuestion}
             className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
           >
-            {currentQuestionIndex === questions.length - 1 ? 'Finish' : 'Next'}
+            {currentQuestionIndex === questions.length - 1
+              ? 'Finish'
+              : 'Next >'}
           </button>
         </div>
       </div>
