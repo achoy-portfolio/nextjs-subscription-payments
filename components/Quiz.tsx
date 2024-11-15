@@ -43,6 +43,7 @@ const Quiz = () => {
 
   const handleAnswerSelect = (answer: string) => {
     setSelectedAnswer(answer);
+    setIsCorrect(null);
   };
 
   const handleCheckAnswer = () => {
