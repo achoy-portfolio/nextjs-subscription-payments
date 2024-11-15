@@ -12,6 +12,8 @@ const Quiz = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  // State to track attempted questions
+  const [attemptedQuestions, setAttemptedQuestions] = useState<number[]>([]);
 
   const supabase = createClient();
 
@@ -42,7 +44,16 @@ const Quiz = () => {
   };
 
   const handleAnswerSelect = (answer: string) => {
-    setSelectedAnswer(answer);
+    // Allow de-selection
+    if (selectedAnswer === answer) {
+      setSelectedAnswer(null);
+    } else {
+      setSelectedAnswer(answer);
+      // Mark the question as attempted
+      if (!attemptedQuestions.includes(currentQuestionIndex)) {
+        setAttemptedQuestions([...attemptedQuestions, currentQuestionIndex]);
+      }
+    }
     setIsCorrect(null);
   };
 
@@ -78,6 +89,7 @@ const Quiz = () => {
     setScore(0);
     setShowResults(false);
     setIsCorrect(null);
+    setAttemptedQuestions([]); // Reset attempted questions
   };
 
   if (isLoading) {
@@ -124,17 +136,19 @@ const Quiz = () => {
                 setIsCorrect(null);
               }}
               className={`
-                p-2 text-sm rounded-l-lg border-r-4
-                transition-all hover:w-20
-                ${
-                  currentQuestionIndex === index
-                    ? 'bg-blue-500 border-white'
-                    : 'bg-gray-800 border-gray-600 hover:bg-gray-700'
-                }
-                ${index < currentQuestionIndex ? 'text-gray-400' : 'text-white'}
-              `}
+                                p-2 text-sm rounded-l-lg border-r-4
+                                transition-all hover:w-20
+                                ${currentQuestionIndex === index ? 'bg-blue-500 border-white' : 'bg-gray-800 border-gray-600 hover:bg-gray-700'}
+                                ${index < currentQuestionIndex ? 'text-gray-400' : 'text-white'}
+                                ${attemptedQuestions.includes(index) ? 'bg-gray-400' : 'bg-green-700'}
+                            `}
             >
-              Q{index + 1}
+              <span
+                className={`${attemptedQuestions.includes(index) ? 'text-black font-bold' : ''}`}
+              >
+                {' '}
+                {/* Added span with conditional styling */}Q{index + 1}
+              </span>
             </button>
           ))}
         </div>
