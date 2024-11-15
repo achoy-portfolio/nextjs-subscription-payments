@@ -43,14 +43,17 @@ const Quiz = () => {
 
   const handleAnswerSelect = (answer: string) => {
     setSelectedAnswer(answer);
-    setIsCorrect(currentQuestion.correct_answer === answer);
   };
 
-  const handleNextQuestion = () => {
+  const handleCheckAnswer = () => {
+    setIsCorrect(currentQuestion.correct_answer === selectedAnswer);
+
     if (isCorrect) {
       setScore(score + 1);
     }
+  };
 
+  const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedAnswer(null);
@@ -108,6 +111,7 @@ const Quiz = () => {
 
   return (
     <div className="flex">
+      {/* Question Navigation */}
       <div className="w-24 mr-4">
         <div className="flex flex-col space-y-2">
           {questions.map((_, index) => (
@@ -119,15 +123,15 @@ const Quiz = () => {
                 setIsCorrect(null);
               }}
               className={`
-                  p-2 text-sm rounded-l-lg border-r-4
-                  transition-all hover:w-20
-                  ${
-                    currentQuestionIndex === index
-                      ? 'bg-blue-500 border-white'
-                      : 'bg-gray-800 border-gray-600 hover:bg-gray-700'
-                  }
-                  ${index < currentQuestionIndex ? 'text-gray-400' : 'text-white'}
-                `}
+                p-2 text-sm rounded-l-lg border-r-4
+                transition-all hover:w-20
+                ${
+                  currentQuestionIndex === index
+                    ? 'bg-blue-500 border-white'
+                    : 'bg-gray-800 border-gray-600 hover:bg-gray-700'
+                }
+                ${index < currentQuestionIndex ? 'text-gray-400' : 'text-white'}
+              `}
             >
               Q{index + 1}
             </button>
@@ -135,6 +139,7 @@ const Quiz = () => {
         </div>
       </div>
 
+      {/* Question and Answers */}
       <div className="max-w-2xl flex-1 p-6 bg-black rounded-lg shadow-lg">
         <div className="mb-4">
           <span className="text-sm text-gray-500">
@@ -172,6 +177,8 @@ const Quiz = () => {
             </button>
           ))}
         </div>
+
+        {/* Feedback Message */}
         {isCorrect !== null && (
           <div
             className={`mt-4 p-4 rounded-lg ${
@@ -181,13 +188,22 @@ const Quiz = () => {
             {isCorrect ? 'Correct!' : 'Incorrect. Try again.'}
           </div>
         )}
-        <div className="mt-6 flex justify-between">
+
+        {/* Navigation Buttons */}
+        <div className="mt-6 flex justify-between items-center">
+          {' '}
           <span className="text-sm text-gray-500">
             Score: {score}/{currentQuestionIndex + 1}
           </span>
           <div className="flex space-x-5">
-            {' '}
-            {/* Add space-x-5 here */}
+            {selectedAnswer && (
+              <button
+                onClick={handleCheckAnswer}
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              >
+                Check Answer
+              </button>
+            )}
             {currentQuestionIndex > 0 && (
               <button
                 onClick={handlePreviousQuestion}
