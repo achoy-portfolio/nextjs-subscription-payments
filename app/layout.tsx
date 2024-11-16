@@ -8,8 +8,8 @@ import { getURL } from '@/utils/helpers';
 import 'styles/main.css';
 
 // Define website metadata
-const title = 'Next.js Subscription Starter';
-const description = 'Brought to you by Vercel, Stripe, and Supabase.';
+const title = 'Study Hard';
+const description = 'Brought to you by Study';
 
 // Configure metadata for SEO and social sharing
 export const metadata: Metadata = {

@@ -14,6 +14,7 @@ const Quiz = () => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [attemptedQuestions, setAttemptedQuestions] = useState<number[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<(string | null)[]>([]);
+  const [flaggedQuestions, setFlaggedQuestions] = useState<number[]>([]);
 
   const supabase = createClient();
 
@@ -89,6 +90,16 @@ const Quiz = () => {
     }
   };
 
+  const handleFlagQuestion = (index: number) => {
+    setFlaggedQuestions((prevFlags) => {
+      if (prevFlags.includes(index)) {
+        return prevFlags.filter((item) => item !== index);
+      } else {
+        return [...prevFlags, index];
+      }
+    });
+  };
+
   const restartQuiz = () => {
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
@@ -97,6 +108,7 @@ const Quiz = () => {
     setIsCorrect(null);
     setAttemptedQuestions([]);
     setSelectedAnswers([]);
+    setFlaggedQuestions([]);
   };
 
   if (isLoading) {
@@ -142,17 +154,31 @@ const Quiz = () => {
                 setSelectedAnswer(selectedAnswers[index] || null);
                 setIsCorrect(null);
               }}
-              className={`
-                p-2 text-sm rounded-l-lg
-                transition-all hover:scale-110 hover:bg-blue-200
-                ${currentQuestionIndex === index ? 'bg-blue-500' : ''}
-                ${index < currentQuestionIndex ? 'text-white font-bold' : 'text-white font-bold'}
-                ${currentQuestionIndex !== index && attemptedQuestions.includes(index) && selectedAnswers[index] ? 'bg-gray-400' : ''}
-                ${currentQuestionIndex !== index && !attemptedQuestions.includes(index) ? 'bg-green-700' : ''}
-            `}
+              className={`p-2 text-sm rounded-l-lg transition-all hover:scale-110 hover:bg-blue-200 ${
+                currentQuestionIndex === index ? 'bg-blue-500' : ''
+              } ${
+                index < currentQuestionIndex
+                  ? 'text-white font-bold'
+                  : 'text-white font-bold'
+              } ${
+                currentQuestionIndex !== index &&
+                attemptedQuestions.includes(index) &&
+                selectedAnswers[index]
+                  ? 'bg-gray-400'
+                  : ''
+              } ${
+                currentQuestionIndex !== index &&
+                !attemptedQuestions.includes(index)
+                  ? 'bg-green-700'
+                  : ''
+              } ${flaggedQuestions.includes(index) ? 'bg-red-500' : ''}`}
             >
               <span
-                className={`${attemptedQuestions.includes(index) && selectedAnswers[index] ? 'text-white font-bold' : ''}`}
+                className={`${
+                  attemptedQuestions.includes(index) && selectedAnswers[index]
+                    ? 'text-white font-bold'
+                    : ''
+                }`}
               >
                 Q{index + 1}
               </span>
@@ -245,6 +271,18 @@ const Quiz = () => {
                 {'< Back'}
               </button>
             )}
+            <button
+              onClick={() => handleFlagQuestion(currentQuestionIndex)}
+              className={`bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-red-800 ${
+                flaggedQuestions.includes(currentQuestionIndex)
+                  ? 'bg-gray-600'
+                  : ''
+              }`}
+            >
+              {flaggedQuestions.includes(currentQuestionIndex)
+                ? 'Flagged'
+                : 'Flag'}
+            </button>
             <button
               onClick={handleNextQuestion}
               className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-800"
