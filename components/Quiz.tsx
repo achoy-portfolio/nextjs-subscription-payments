@@ -258,7 +258,7 @@ const Quiz = () => {
             {selectedAnswer && (
               <button
                 onClick={handleCheckAnswer}
-                className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-800"
+                className="bg-yellow-500 text-white font-bold px-4 py-2 rounded hover:bg-yellow-600"
               >
                 Check Answer
               </button>
