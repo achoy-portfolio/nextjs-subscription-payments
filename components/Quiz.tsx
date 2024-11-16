@@ -35,7 +35,37 @@ const Quiz = () => {
         return;
       }
 
-      setQuestions(data || []);
+      if (data) {
+        const randomizedQuestions = data.map((question) => {
+          const choices = [
+            question.choice_a,
+            question.choice_b,
+            question.choice_c,
+            question.choice_d
+          ];
+
+          // Fisher-Yates shuffle algorithm for efficient in-place shuffling
+          for (let i = choices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [choices[i], choices[j]] = [choices[j], choices[i]]; // Swap
+          }
+
+          return {
+            ...question,
+            choice_a: choices[0],
+            choice_b: choices[1],
+            choice_c: choices[2],
+            choice_d: choices[3],
+            // Store the correct answer index after shuffling
+            correct_answer_index: choices.findIndex(
+              (choice) => choice === question.correct_answer
+            )
+          };
+        });
+
+        setQuestions(randomizedQuestions); // Only set the questions once, with the randomized version
+      }
+
       setIsLoading(false);
     } catch (error) {
       console.error('Error fetching questions:', error);
@@ -65,7 +95,11 @@ const Quiz = () => {
   };
 
   const handleCheckAnswer = () => {
-    setIsCorrect(currentQuestion.correct_answer === selectedAnswer);
+    // Use correct_answer_index to check
+    const correctAnswerChoice = ['A', 'B', 'C', 'D'][
+      currentQuestion.correct_answer_index
+    ];
+    setIsCorrect(correctAnswerChoice === selectedAnswer);
 
     if (isCorrect) {
       setScore(score + 1);
