@@ -164,7 +164,7 @@ const Quiz = () => {
       {/* Question and Answers */}
       <div className="max-w-2xl flex-1 p-6 bg-white rounded-lg shadow-lg">
         <div className="mb-4">
-          <span className="text-sm text-white">
+          <span className="text-sm text-zinc-600">
             Question {currentQuestionIndex + 1} of {questions.length}
           </span>
           <div className="h-2 bg-gray-200 rounded">
@@ -232,7 +232,7 @@ const Quiz = () => {
             {selectedAnswer && (
               <button
                 onClick={handleCheckAnswer}
-                className="bg-green-500 text-white font-bold px-4 py-2 rounded hover:bg-green-600"
+                className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-800"
               >
                 Check Answer
               </button>
@@ -240,14 +240,14 @@ const Quiz = () => {
             {currentQuestionIndex > 0 && (
               <button
                 onClick={handlePreviousQuestion}
-                className="bg-green-500 text-white font-bold px-4 py-2 rounded hover:bg-green-600"
+                className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-800"
               >
                 {'< Back'}
               </button>
             )}
             <button
               onClick={handleNextQuestion}
-              className="bg-green-500 text-white font-bold px-4 py-2 rounded hover:bg-green-600"
+              className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-800"
             >
               {currentQuestionIndex === questions.length - 1
                 ? 'Finish'
