@@ -4,26 +4,32 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import type { QuizQuestion } from '@/types/quiz';
 
+// Main Quiz component that handles the quiz logic and UI
 const Quiz = () => {
-  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showResults, setShowResults] = useState(false);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  const [attemptedQuestions, setAttemptedQuestions] = useState<number[]>([]);
-  const [selectedAnswers, setSelectedAnswers] = useState<(string | null)[]>([]);
-  const [flaggedQuestions, setFlaggedQuestions] = useState<number[]>([]);
+  // State Management
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]); // Stores all quiz questions
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Tracks current question
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null); // Currently selected answer
+  const [score, setScore] = useState(0); // User's current score
+  const [isLoading, setIsLoading] = useState(true); // Loading state for data fetching
+  const [showResults, setShowResults] = useState(false); // Controls results screen visibility
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null); // Tracks if current answer is correct
+  const [attemptedQuestions, setAttemptedQuestions] = useState<number[]>([]); // Keeps track of attempted questions
+  const [selectedAnswers, setSelectedAnswers] = useState<(string | null)[]>([]); // Stores all selected answers
+  const [flaggedQuestions, setFlaggedQuestions] = useState<number[]>([]); // Tracks flagged questions for review
 
+  // Initialize Supabase client
   const supabase = createClient();
 
+  // Fetch questions when component mounts
   useEffect(() => {
     fetchQuestions();
   }, []);
 
+  // Function to fetch and randomize questions from Supabase
   const fetchQuestions = async () => {
     try {
+      // Fetch questions from the database
       const { data, error } = await supabase
         .from('quiz_questions')
         .select('*')
@@ -36,6 +42,7 @@ const Quiz = () => {
       }
 
       if (data) {
+        // Randomize answer choices for each question
         const randomizedQuestions = data.map((question) => {
           const choices = [
             question.choice_a,
@@ -44,10 +51,10 @@ const Quiz = () => {
             question.choice_d
           ];
 
-          // Fisher-Yates shuffle algorithm for efficient in-place shuffling
+          // Fisher-Yates shuffle algorithm for randomizing answer choices
           for (let i = choices.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [choices[i], choices[j]] = [choices[j], choices[i]]; // Swap
+            [choices[i], choices[j]] = [choices[j], choices[i]];
           }
 
           return {
@@ -56,14 +63,14 @@ const Quiz = () => {
             choice_b: choices[1],
             choice_c: choices[2],
             choice_d: choices[3],
-            // Store the correct answer index after shuffling
+            // Track correct answer's new position after shuffling
             correct_answer_index: choices.findIndex(
               (choice) => choice === question.correct_answer
             )
           };
         });
 
-        setQuestions(randomizedQuestions); // Only set the questions once, with the randomized version
+        setQuestions(randomizedQuestions);
       }
 
       setIsLoading(false);
@@ -74,15 +81,18 @@ const Quiz = () => {
     }
   };
 
+  // Handle answer selection and tracking
   const handleAnswerSelect = (answer: string) => {
+    // Update selected answers array
     setSelectedAnswers((prevAnswers) => {
       const newAnswers = [...prevAnswers];
       newAnswers[currentQuestionIndex] = answer;
       return newAnswers;
     });
 
+    // Update attempted questions tracking
     if (answer === null) {
-      // Remove attempt if deselecting
+      // Remove from attempted if deselecting
       setAttemptedQuestions((prevAttempts) =>
         prevAttempts.filter((item) => item !== currentQuestionIndex)
       );
@@ -91,11 +101,11 @@ const Quiz = () => {
     }
 
     setSelectedAnswer(answer);
-    setIsCorrect(null);
+    setIsCorrect(null); // Reset correct/incorrect feedback
   };
 
+  // Verify if selected answer is correct
   const handleCheckAnswer = () => {
-    // Use correct_answer_index to check
     const correctAnswerChoice = ['A', 'B', 'C', 'D'][
       currentQuestion.correct_answer_index
     ];
@@ -106,24 +116,29 @@ const Quiz = () => {
     }
   };
 
+  // Navigate to next question or show results
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedAnswer(selectedAnswers[currentQuestionIndex + 1] || null); // Set saved answer for the next question
+      // Load previously selected answer if it exists
+      setSelectedAnswer(selectedAnswers[currentQuestionIndex + 1] || null);
       setIsCorrect(null);
     } else {
-      setShowResults(true);
+      setShowResults(true); // Show final results if all questions completed
     }
   };
 
+  // Navigate to previous question
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setSelectedAnswer(selectedAnswers[currentQuestionIndex - 1] || null); // Set saved answer for the previous question
+      // Load previously selected answer if it exists
+      setSelectedAnswer(selectedAnswers[currentQuestionIndex - 1] || null);
       setIsCorrect(null);
     }
   };
 
+  // Toggle flag status for review later
   const handleFlagQuestion = (index: number) => {
     setFlaggedQuestions((prevFlags) => {
       if (prevFlags.includes(index)) {
@@ -134,6 +149,7 @@ const Quiz = () => {
     });
   };
 
+  // Reset quiz state for restart
   const restartQuiz = () => {
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
@@ -145,16 +161,19 @@ const Quiz = () => {
     setFlaggedQuestions([]);
   };
 
+  // Loading state UI
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">Loading...</div>
     );
   }
 
+  // No questions available UI
   if (questions.length === 0) {
     return <div className="text-center">No questions available</div>;
   }
 
+  // Results screen UI
   if (showResults) {
     return (
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
@@ -175,9 +194,10 @@ const Quiz = () => {
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  // Main quiz UI
   return (
     <div className="flex">
-      {/* Question Navigation */}
+      {/* Question Navigation Sidebar */}
       <div className="w-24 mr-4">
         <div className="flex flex-col space-y-2">
           {questions.map((_, index) => (
@@ -189,6 +209,7 @@ const Quiz = () => {
                 setIsCorrect(null);
               }}
               className={`p-2 text-sm rounded-l-lg transition-all hover:scale-110 hover:bg-blue-200 ${
+                // Dynamic classes based on question state
                 currentQuestionIndex === index ? 'bg-blue-500' : ''
               } ${
                 index < currentQuestionIndex
@@ -221,8 +242,9 @@ const Quiz = () => {
         </div>
       </div>
 
-      {/* Question and Answers */}
+      {/* Main Question and Answer Area */}
       <div className="max-w-2xl flex-1 p-6 bg-white rounded-lg shadow-lg">
+        {/* Progress Bar */}
         <div className="mb-4">
           <span className="text-sm text-zinc-600">
             Question {currentQuestionIndex + 1} of {questions.length}
@@ -236,9 +258,13 @@ const Quiz = () => {
             />
           </div>
         </div>
+
+        {/* Question Text */}
         <h2 className="text-xl text-black font-bold mb-4">
           {currentQuestion.question_text}
         </h2>
+
+        {/* Answer Choices */}
         <div className="space-y-3">
           {['A', 'B', 'C', 'D'].map((choice) => (
             <button
@@ -246,8 +272,6 @@ const Quiz = () => {
               onClick={() => {
                 if (selectedAnswer === choice) {
                   handleAnswerSelect(null);
-
-                  // Remove attempt if de-selecting
                   setAttemptedQuestions((prevAttempts) =>
                     prevAttempts.filter((item) => item !== currentQuestionIndex)
                   );
@@ -271,7 +295,7 @@ const Quiz = () => {
           ))}
         </div>
 
-        {/* Feedback Message */}
+        {/* Answer Feedback */}
         {isCorrect !== null && (
           <div
             className={`mt-4 p-4 rounded-lg ${
@@ -282,9 +306,8 @@ const Quiz = () => {
           </div>
         )}
 
-        {/* Navigation Buttons */}
+        {/* Navigation and Control Buttons */}
         <div className="mt-6 flex justify-between items-center">
-          {' '}
           <span className="text-sm text-white">
             Score: {score}/{currentQuestionIndex + 1}
           </span>
