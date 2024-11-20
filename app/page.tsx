@@ -12,26 +12,16 @@ const cards: Props[] = [
   {
     title: 'Comprehensive Study Materials',
     description:
-      'Access a vast library of practice questions, mock exams, and detailed explanations covering all key areas of the PEBC MCQ and OSCE exams.',
-    children: <div>Includes flashcards, study guides, and more!</div>
+      'Access a vast library of practice questions, mock exams, and detailed explanations covering all key areas of the PEBC MCQ and OSCE exams.'
   },
   {
     title: 'Expert Guidance and Support',
     description:
-      'Benefit from the expertise of licensed Canadian pharmacists who have successfully navigated the PEBC exams.',
-    children: (
-      <div>
-        Get personalized advice and support through our community forum and live
-        Q&A sessions.
-      </div>
-    )
+      'Benefit from the expertise of licensed Canadian pharmacists who have successfully navigated the PEBC exams.'
   },
   {
     title: 'Flexible and Affordable Plans',
-    description: 'Choose the study plan that best fits your needs and budget.',
-    children: (
-      <div>Enjoy access to our platform on any device, anytime, anywhere.</div>
-    )
+    description: 'Choose the study plan that best fits your needs and budget.'
   }
 ];
 
