@@ -23,21 +23,23 @@ export const metadata: Metadata = {
   }
 };
 
-// Root layout component that wraps all pages
-export default async function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({
+  children,
+  footerContent
+}: PropsWithChildren<{ footerContent?: React.ReactNode }>) {
   return (
     <html lang="en">
       <body className="bg-white">
         <Navbar />
         <main
-          id="skip" // For accessibility skip-to-content link
-          className="min-h-[calc(100dvh-4rem)] md:min-h[calc(100dvh-5rem)]" // Responsive height calculations
+          id="skip"
+          className="min-h-[calc(100dvh-4rem)] md:min-h[calc(100dvh-5rem)]"
         >
           {children}
         </main>
+        {footerContent}
         <Footer />
         <Suspense>
-          {' '}
           <Toaster />
         </Suspense>
       </body>
